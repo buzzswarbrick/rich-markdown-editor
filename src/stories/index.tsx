@@ -40,45 +40,6 @@ const docSearchResults = [
   },
 ];
 
-class YoutubeEmbed extends React.Component<{
-  attrs: any;
-  isSelected: boolean;
-}> {
-  render() {
-    const { attrs } = this.props;
-    const videoId = attrs.matches[1];
-
-    return (
-      <iframe
-        className={this.props.isSelected ? "ProseMirror-selectednode" : ""}
-        src={`https://www.youtube.com/embed/${videoId}?modestbranding=1`}
-      />
-    );
-  }
-}
-
-const embeds = [
-  {
-    title: "YouTube",
-    keywords: "youtube video tube google",
-    defaultHidden: true,
-    // eslint-disable-next-line react/display-name
-    icon: () => (
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/7/75/YouTube_social_white_squircle_%282017%29.svg"
-        width={24}
-        height={24}
-      />
-    ),
-    matcher: url => {
-      return !!url.match(
-        /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([a-zA-Z0-9_-]{11})$/i
-      );
-    },
-    component: YoutubeEmbed,
-  },
-];
-
 export default function Example(props) {
   const { body } = document;
   if (body)
@@ -89,7 +50,7 @@ export default function Example(props) {
   return (
     <div style={{ padding: "1em 2em" }}>
       <Editor
-        onCreateLink={title => {
+        onCreateLink={(title) => {
           // Delay to simulate time taken for remote API request to complete
           return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -103,29 +64,28 @@ export default function Example(props) {
             }, 1500);
           });
         }}
-        onSearchLink={async term => {
+        onSearchLink={async (term) => {
           console.log("Searched link: ", term);
 
           // Delay to simulate time taken for remote API request to complete
-          return new Promise(resolve => {
+          return new Promise((resolve) => {
             setTimeout(() => {
               resolve(
-                docSearchResults.filter(result =>
+                docSearchResults.filter((result) =>
                   result.title.toLowerCase().includes(term.toLowerCase())
                 )
               );
             }, Math.random() * 500);
           });
         }}
-        uploadImage={file => {
+        uploadImage={(file) => {
           console.log("File upload triggered: ", file);
 
           // Delay to simulate time taken to upload
-          return new Promise(resolve => {
+          return new Promise((resolve) => {
             setTimeout(() => resolve("https://picsum.photos/600/600"), 1500);
           });
         }}
-        embeds={embeds}
         {...props}
       />
     </div>

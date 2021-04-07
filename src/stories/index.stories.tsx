@@ -4,6 +4,8 @@ import { Props } from "..";
 import React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
 
+import { BoldIcon } from "outline-icons";
+
 export default {
   title: "Editor",
   component: Editor,
@@ -19,7 +21,7 @@ export default {
   },
 } as Meta;
 
-const Template: Story<Props> = args => <Editor {...args} />;
+const Template: Story<Props> = (args) => <Editor {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
@@ -139,7 +141,7 @@ export const ReadOnly = Template.bind({});
 ReadOnly.args = {
   readOnly: true,
   defaultValue: `# Read Only
-  
+
 The content of this editor cannot be edited`,
 };
 
@@ -172,9 +174,9 @@ Persisted.args = {
   defaultValue:
     localStorage.getItem("saved") ||
     `# Persisted
-  
+
 The contents of this editor are persisted to local storage on change (edit and reload)`,
-  onChange: debounce(value => {
+  onChange: debounce((value) => {
     const text = value();
     localStorage.setItem("saved", text);
   }, 250),
@@ -196,7 +198,7 @@ export const Focused = Template.bind({});
 Focused.args = {
   autoFocus: true,
   defaultValue: `# Focused
-  
+
   This editor starts in focus`,
 };
 
@@ -206,4 +208,72 @@ Dark.args = {
   defaultValue: `# Dark
 
 There's a customizable dark theme too`,
+};
+
+class YoutubeEmbed extends React.Component<{
+  attrs: any;
+  isSelected: boolean;
+}> {
+  render() {
+    const { attrs } = this.props;
+    const videoId = attrs.matches[1];
+
+    return (
+      <iframe
+        className={this.props.isSelected ? "ProseMirror-selectednode" : ""}
+        src={`https://www.youtube.com/embed/${videoId}?modestbranding=1`}
+      />
+    );
+  }
+}
+
+const embeds = [
+  {
+    title: "YouTube",
+    keywords: "youtube video tube google",
+    // eslint-disable-next-line react/display-name
+    icon: () => (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/7/75/YouTube_social_white_squircle_%282017%29.svg"
+        width={24}
+        height={24}
+      />
+    ),
+    matcher: (url) => {
+      return !!url.match(
+        /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([a-zA-Z0-9_-]{11})$/i
+      );
+    },
+    component: YoutubeEmbed,
+  },
+
+  {
+    title: "Spotify",
+    keywords: "spotify",
+    // eslint-disable-next-line react/display-name
+    icon: () => (
+      <img src="https://cdn.cdnlogo.com/logos/s/52/spotify.svg" height={24} />
+    ),
+    matcher: (url) => {
+      return !!url.match(
+        /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([a-zA-Z0-9_-]{11})$/i
+      );
+    },
+    component: YoutubeEmbed,
+  },
+];
+
+export const Embeds = Template.bind({});
+Embeds.args = {
+  onChange: debounce((value) => {
+    const text = value();
+    console.log(text);
+    localStorage.setItem("saved", text);
+  }, 250),
+  defaultValue:
+    localStorage.getItem("saved") ||
+    `# Persisted
+
+The contents of this editor are persisted to local storage on change (edit and reload)`,
+  embeds,
 };

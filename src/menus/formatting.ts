@@ -1,14 +1,12 @@
 import {
   BoldIcon,
-  CodeIcon,
-  Heading1Icon,
+  Heading3Icon,
   Heading2Icon,
   ItalicIcon,
   BlockQuoteIcon,
   LinkIcon,
   StrikethroughIcon,
   InputIcon,
-  HighlightIcon,
 } from "outline-icons";
 import { isInTable } from "prosemirror-tables";
 import { EditorState } from "prosemirror-state";
@@ -58,19 +56,19 @@ export default function formattingMenuItems(
       icon: StrikethroughIcon,
       active: isMarkActive(schema.marks.strikethrough),
     },
-    {
-      name: "highlight",
-      tooltip: dictionary.mark,
-      icon: HighlightIcon,
-      active: isMarkActive(schema.marks.highlight),
-      visible: !isTemplate,
-    },
-    {
-      name: "code_inline",
-      tooltip: dictionary.codeInline,
-      icon: CodeIcon,
-      active: isMarkActive(schema.marks.code_inline),
-    },
+    // {
+    //   name: "highlight",
+    //   tooltip: dictionary.mark,
+    //   icon: HighlightIcon,
+    //   active: isMarkActive(schema.marks.highlight),
+    //   visible: !isTemplate,
+    // },
+    // {
+    //   name: "code_inline",
+    //   tooltip: dictionary.codeInline,
+    //   icon: CodeIcon,
+    //   active: isMarkActive(schema.marks.code_inline),
+    // },
     {
       name: "separator",
       visible: allowBlocks,
@@ -78,17 +76,17 @@ export default function formattingMenuItems(
     {
       name: "heading",
       tooltip: dictionary.heading,
-      icon: Heading1Icon,
-      active: isNodeActive(schema.nodes.heading, { level: 1 }),
-      attrs: { level: 1 },
+      icon: Heading2Icon,
+      active: isNodeActive(schema.nodes.heading, { level: 2 }),
+      attrs: { level: 2 },
       visible: allowBlocks,
     },
     {
       name: "heading",
       tooltip: dictionary.subheading,
-      icon: Heading2Icon,
-      active: isNodeActive(schema.nodes.heading, { level: 2 }),
-      attrs: { level: 2 },
+      icon: Heading3Icon,
+      active: isNodeActive(schema.nodes.heading, { level: 3 }),
+      attrs: { level: 3 },
       visible: allowBlocks,
     },
     {
