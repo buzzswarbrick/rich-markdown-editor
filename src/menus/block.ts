@@ -6,6 +6,7 @@ import {
   HorizontalRuleIcon,
   OrderedListIcon,
   LinkIcon,
+  ImageIcon,
 } from "outline-icons";
 import { MenuItem } from "../types";
 import baseDictionary from "../dictionary";
@@ -93,12 +94,12 @@ export default function blockMenuItems(
       shortcut: `${mod} _`,
       keywords: "horizontal rule break line",
     },
-    // {
-    //   name: "image",
-    //   title: dictionary.image,
-    //   icon: ImageIcon,
-    //   keywords: "picture photo",
-    // },
+    {
+      name: "image",
+      title: dictionary.image,
+      icon: ImageIcon,
+      keywords: "picture photo",
+    },
     {
       name: "link",
       title: dictionary.link,

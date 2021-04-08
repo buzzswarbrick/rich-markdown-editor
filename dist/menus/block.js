@@ -54,6 +54,12 @@ function blockMenuItems(dictionary) {
             keywords: "horizontal rule break line",
         },
         {
+            name: "image",
+            title: dictionary.image,
+            icon: outline_icons_1.ImageIcon,
+            keywords: "picture photo",
+        },
+        {
             name: "link",
             title: dictionary.link,
             icon: outline_icons_1.LinkIcon,
