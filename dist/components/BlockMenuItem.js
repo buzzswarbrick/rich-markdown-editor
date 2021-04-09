@@ -28,12 +28,12 @@ const styled_components_1 = __importStar(require("styled-components"));
 const theme_1 = __importDefault(require("../theme"));
 function BlockMenuItem({ selected, disabled, onClick, title, shortcut, icon, }) {
     const Icon = icon;
-    const ref = React.useCallback(node => {
+    const ref = React.useCallback((node) => {
         if (selected && node) {
             smooth_scroll_into_view_if_needed_1.default(node, {
                 scrollMode: "if-needed",
                 block: "center",
-                boundary: parent => {
+                boundary: (parent) => {
                     return parent.id !== "block-menu-container";
                 },
             });
@@ -56,22 +56,23 @@ const MenuItem = styled_components_1.default.button `
   height: 36px;
   cursor: pointer;
   border: none;
-  opacity: ${props => (props.disabled ? ".5" : "1")};
-  color: ${props => props.selected ? props.theme.black : props.theme.blockToolbarText};
-  background: ${props => props.selected ? props.theme.blockToolbarTrigger : "none"};
+  opacity: ${(props) => (props.disabled ? ".5" : "1")};
+  font-family: ${(props) => props.theme.fontFamily};
+  color: ${(props) => props.selected ? props.theme.black : props.theme.blockToolbarText};
+  background: ${(props) => props.selected ? props.theme.blockToolbarTrigger : "none"};
   padding: 0 16px;
   outline: none;
 
   &:hover,
   &:active {
-    color: ${props => props.theme.black};
-    background: ${props => props.selected
+    color: ${(props) => props.theme.black};
+    background: ${(props) => props.selected
     ? props.theme.blockToolbarTrigger
     : props.theme.blockToolbarHoverBackground};
   }
 `;
 const Shortcut = styled_components_1.default.span `
-  color: ${props => props.theme.textSecondary};
+  color: ${(props) => props.theme.textSecondary};
   flex-grow: 1;
   text-align: right;
 `;
