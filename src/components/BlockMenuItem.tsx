@@ -47,7 +47,11 @@ function BlockMenuItem({
       onClick={disabled ? undefined : onClick}
       ref={ref}
     >
-      <Icon color={selected ? theme.black : undefined} />
+      <Icon
+        color={
+          selected ? theme.blockToolbarIconSelected : theme.blockToolbarIcon
+        }
+      />
       &nbsp;&nbsp;{title}
       <Shortcut>{shortcut}</Shortcut>
     </MenuItem>
@@ -68,9 +72,10 @@ const MenuItem = styled.button<{
   cursor: pointer;
   border: none;
   opacity: ${(props) => (props.disabled ? ".5" : "1")};
-  font-family: ${(props) => props.theme.fontFamily};
   color: ${(props) =>
-    props.selected ? props.theme.black : props.theme.blockToolbarText};
+    props.selected
+      ? props.theme.blockToolbarTextSelected
+      : props.theme.blockToolbarText};
   background: ${(props) =>
     props.selected ? props.theme.blockToolbarTrigger : "none"};
   padding: 0 16px;
@@ -78,7 +83,7 @@ const MenuItem = styled.button<{
 
   &:hover,
   &:active {
-    color: ${(props) => props.theme.black};
+    color: ${(props) => props.theme.blockToolbarTextSelected};
     background: ${(props) =>
       props.selected
         ? props.theme.blockToolbarTrigger

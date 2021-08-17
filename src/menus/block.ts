@@ -5,6 +5,7 @@ import {
   Heading3Icon,
   HorizontalRuleIcon,
   OrderedListIcon,
+  PageBreakIcon,
   LinkIcon,
   ImageIcon,
 } from "outline-icons";
@@ -93,6 +94,13 @@ export default function blockMenuItems(
       icon: HorizontalRuleIcon,
       shortcut: `${mod} _`,
       keywords: "horizontal rule break line",
+    },
+    {
+      name: "hr",
+      title: dictionary.pageBreak,
+      icon: PageBreakIcon,
+      keywords: "page print break line",
+      attrs: { markup: "***" },
     },
     {
       name: "image",

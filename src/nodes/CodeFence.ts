@@ -14,6 +14,7 @@ import powershell from "refractor/lang/powershell";
 import ruby from "refractor/lang/ruby";
 import sql from "refractor/lang/sql";
 import typescript from "refractor/lang/typescript";
+import yaml from "refractor/lang/yaml";
 import { setBlockType } from "prosemirror-commands";
 import { textblockTypeInputRule } from "prosemirror-inputrules";
 import copy from "copy-to-clipboard";
@@ -21,6 +22,9 @@ import Prism, { LANGUAGES } from "../plugins/Prism";
 import isInCode from "../queries/isInCode";
 import Node from "./Node";
 import { ToastType } from "../types";
+
+const PERSISTENCE_KEY = "rme-code-language";
+const DEFAULT_LANGUAGE = "javascript";
 
 [
   bash,
@@ -38,6 +42,7 @@ import { ToastType } from "../types";
   ruby,
   sql,
   typescript,
+  yaml,
 ].forEach(refractor.register);
 
 export default class CodeFence extends Node {
@@ -53,7 +58,7 @@ export default class CodeFence extends Node {
     return {
       attrs: {
         language: {
-          default: "javascript",
+          default: DEFAULT_LANGUAGE,
         },
       },
       content: "text*",
@@ -104,7 +109,10 @@ export default class CodeFence extends Node {
   }
 
   commands({ type }) {
-    return () => setBlockType(type);
+    return () =>
+      setBlockType(type, {
+        language: localStorage?.getItem(PERSISTENCE_KEY) || DEFAULT_LANGUAGE,
+      });
   }
 
   keys({ type }) {
@@ -155,10 +163,13 @@ export default class CodeFence extends Node {
     const result = view.posAtCoords({ top, left });
 
     if (result) {
+      const language = element.value;
       const transaction = tr.setNodeMarkup(result.inside, undefined, {
-        language: element.value,
+        language,
       });
       view.dispatch(transaction);
+
+      localStorage?.setItem(PERSISTENCE_KEY, language);
     }
   };
 
