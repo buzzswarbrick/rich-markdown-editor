@@ -14,6 +14,10 @@ const Input = styled_components_1.default.input `
   margin: 0;
   outline: none;
   flex-grow: 1;
+
+  @media (hover: none) and (pointer: coarse) {
+    font-size: 16px;
+  }
 `;
 exports.default = Input;
 //# sourceMappingURL=Input.js.map

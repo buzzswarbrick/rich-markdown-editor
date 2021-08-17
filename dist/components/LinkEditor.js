@@ -62,7 +62,7 @@ class LinkEditor extends React.Component {
                 return;
             this.discardInputValue = true;
             const { from, to } = this.props;
-            if (!isUrl_1.default(href) && !href.startsWith("/")) {
+            if (!isUrl_1.default(href) && !href.startsWith("/") && !href.startsWith("#")) {
                 href = `https://${href}`;
             }
             this.props.onSelectLink({ href, title, from, to });
@@ -252,6 +252,15 @@ const SearchResults = styled_components_1.default.ol `
   border-radius: 0 0 4px 4px;
   overflow-y: auto;
   max-height: 25vh;
+
+  @media (hover: none) and (pointer: coarse) {
+    position: fixed;
+    top: auto;
+    bottom: 40px;
+    border-radius: 0;
+    max-height: 50vh;
+    padding: 8px 8px 4px;
+  }
 `;
 exports.default = styled_components_1.withTheme(LinkEditor);
 //# sourceMappingURL=LinkEditor.js.map

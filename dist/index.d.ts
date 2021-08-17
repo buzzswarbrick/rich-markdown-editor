@@ -63,7 +63,10 @@ export declare const theme: {
     blockToolbarTrigger: string;
     blockToolbarTriggerIcon: string;
     blockToolbarItem: string;
+    blockToolbarIcon: undefined;
+    blockToolbarIconSelected: string;
     blockToolbarText: string;
+    blockToolbarTextSelected: string;
     blockToolbarHoverBackground: string;
     blockToolbarDivider: string;
     noticeInfoBackground: string;
@@ -91,11 +94,13 @@ export declare type Props = {
     defaultValue: string;
     placeholder: string;
     extensions: Extension[];
+    disableExtensions?: ("strong" | "code_inline" | "highlight" | "em" | "link" | "placeholder" | "strikethrough" | "underline" | "blockquote" | "bullet_list" | "checkbox_item" | "checkbox_list" | "code_block" | "code_fence" | "embed" | "br" | "heading" | "hr" | "image" | "list_item" | "container_notice" | "ordered_list" | "paragraph" | "table" | "td" | "th" | "tr")[];
     autoFocus?: boolean;
     readOnly?: boolean;
     readOnlyWriteCheckboxes?: boolean;
     dictionary?: Partial<typeof baseDictionary>;
     dark?: boolean;
+    dir?: string;
     theme?: typeof theme;
     template?: boolean;
     headingsOffset?: number;
@@ -111,7 +116,7 @@ export declare type Props = {
         done: any;
     }) => void;
     onCancel?: () => void;
-    onChange: (value: () => string) => void;
+    onChange?: (value: () => string) => void;
     onImageUploadStart?: () => void;
     onImageUploadStop?: () => void;
     onCreateLink?: (title: string) => Promise<string>;
@@ -124,9 +129,10 @@ export declare type Props = {
     onShowToast?: (message: string, code: ToastType) => void;
     tooltip: typeof React.Component | React.FC<any>;
     className?: string;
-    style?: Record<string, string>;
+    style?: React.CSSProperties;
 };
 declare type State = {
+    isRTL: boolean;
     isEditorFocused: boolean;
     selectionMenuOpen: boolean;
     blockMenuOpen: boolean;
@@ -136,6 +142,7 @@ declare type State = {
 declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
     static defaultProps: {
         defaultValue: string;
+        dir: string;
         placeholder: string;
         onImageUploadStart: () => void;
         onImageUploadStop: () => void;
@@ -145,6 +152,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         tooltip: typeof Tooltip;
     };
     state: {
+        isRTL: boolean;
         isEditorFocused: boolean;
         selectionMenuOpen: boolean;
         blockMenuOpen: boolean;
@@ -158,6 +166,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
     schema: Schema;
     serializer: MarkdownSerializer;
     parser: MarkdownParser;
+    pasteParser: MarkdownParser;
     plugins: Plugin[];
     keymaps: Plugin[];
     inputRules: InputRule[];
@@ -172,6 +181,8 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
     };
     commands: Record<string, any>;
     componentDidMount(): void;
+    componentWillUnmount(): void;
+    outsideClickListener(event: any): void;
     componentDidUpdate(prevProps: Props): void;
     init(): void;
     createExtensions(): ExtensionManager;
@@ -185,10 +196,12 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
     createSchema(): Schema<string, string>;
     createSerializer(): import("./lib/markdown/serializer").MarkdownSerializer;
     createParser(): MarkdownParser<any>;
+    createPasteParser(): MarkdownParser<any>;
     createState(value?: string): EditorState<any>;
     createDocument(content: string): import("prosemirror-model").Node<any>;
     createView(): EditorView<any>;
     scrollToAnchor(hash: string): void;
+    calculateDir: () => void;
     value: () => string;
     handleChange: () => void;
     handleSave: () => void;
@@ -261,7 +274,10 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         blockToolbarTrigger: string;
         blockToolbarTriggerIcon: string;
         blockToolbarItem: string;
+        blockToolbarIcon: undefined;
+        blockToolbarIconSelected: string;
         blockToolbarText: string;
+        blockToolbarTextSelected: string;
         blockToolbarHoverBackground: string;
         blockToolbarDivider: string;
         noticeInfoBackground: string;
@@ -303,6 +319,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         deleteRow: string;
         deleteTable: string;
         deleteImage: string;
+        downloadImage: string;
         alignImageLeft: string;
         alignImageRight: string;
         alignImageDefault: string;
@@ -316,6 +333,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         hr: string;
         image: string;
         imageUploadError: string;
+        imageCaptionPlaceholder: string;
         info: string;
         infoNotice: string;
         link: string;
@@ -326,6 +344,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         noResults: string;
         openLink: string;
         orderedList: string;
+        pageBreak: string;
         pasteLink: string;
         pasteLinkWithTitle: (title: string) => string;
         placeholder: string;
@@ -360,6 +379,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         deleteRow: string;
         deleteTable: string;
         deleteImage: string;
+        downloadImage: string;
         alignImageLeft: string;
         alignImageRight: string;
         alignImageDefault: string;
@@ -373,6 +393,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         hr: string;
         image: string;
         imageUploadError: string;
+        imageCaptionPlaceholder: string;
         info: string;
         infoNotice: string;
         link: string;
@@ -383,6 +404,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         noResults: string;
         openLink: string;
         orderedList: string;
+        pageBreak: string;
         pasteLink: string;
         pasteLinkWithTitle: (title: string) => string;
         placeholder: string;
@@ -417,6 +439,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         deleteRow: string;
         deleteTable: string;
         deleteImage: string;
+        downloadImage: string;
         alignImageLeft: string;
         alignImageRight: string;
         alignImageDefault: string;
@@ -430,6 +453,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         hr: string;
         image: string;
         imageUploadError: string;
+        imageCaptionPlaceholder: string;
         info: string;
         infoNotice: string;
         link: string;
@@ -440,6 +464,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         noResults: string;
         openLink: string;
         orderedList: string;
+        pageBreak: string;
         pasteLink: string;
         pasteLinkWithTitle: (title: string) => string;
         placeholder: string;
@@ -455,7 +480,7 @@ declare class RichMarkdownEditor extends React.PureComponent<Props, State> {
         warning: string;
         warningNotice: string;
     }) & import("lodash").MemoizedFunction;
-    render: () => JSX.Element;
+    render(): JSX.Element;
 }
 export default RichMarkdownEditor;
 //# sourceMappingURL=index.d.ts.map

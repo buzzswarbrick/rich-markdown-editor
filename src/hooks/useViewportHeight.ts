@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from "react";
-
+declare const window: any;
 export default function useViewportHeight(): number | void {
   // https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport#browser_compatibility
   // Note: No support in Firefox at time of writing, however this mainly exists

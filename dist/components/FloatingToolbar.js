@@ -22,9 +22,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const resize_observer_polyfill_1 = __importDefault(require("resize-observer-polyfill"));
 const React = __importStar(require("react"));
 const react_portal_1 = require("react-portal");
+const useComponentSize_1 = __importDefault(require("../hooks/useComponentSize"));
+const useMediaQuery_1 = __importDefault(require("../hooks/useMediaQuery"));
+const useViewportHeight_1 = __importDefault(require("../hooks/useViewportHeight"));
 const styled_components_1 = __importDefault(require("styled-components"));
 const SSR = typeof window === "undefined";
 const defaultPosition = {
@@ -33,34 +35,34 @@ const defaultPosition = {
     offset: 0,
     visible: false,
 };
-const useComponentSize = ref => {
-    const [size, setSize] = React.useState({
-        width: 0,
-        height: 0,
-    });
-    React.useEffect(() => {
-        const sizeObserver = new resize_observer_polyfill_1.default(entries => {
-            entries.forEach(({ target }) => {
-                if (size.width !== target.clientWidth ||
-                    size.height !== target.clientHeight) {
-                    setSize({ width: target.clientWidth, height: target.clientHeight });
-                }
-            });
-        });
-        sizeObserver.observe(ref.current);
-        return () => sizeObserver.disconnect();
-    }, [ref]);
-    return size;
-};
 function usePosition({ menuRef, isSelectingText, props }) {
     const { view, active } = props;
     const { selection } = view.state;
-    const { width: menuWidth, height: menuHeight } = useComponentSize(menuRef);
+    const { width: menuWidth, height: menuHeight } = useComponentSize_1.default(menuRef);
+    const viewportHeight = useViewportHeight_1.default();
+    const isTouchDevice = useMediaQuery_1.default("(hover: none) and (pointer: coarse)");
     if (!active || !menuWidth || !menuHeight || SSR || isSelectingText) {
         return defaultPosition;
     }
-    const fromPos = view.coordsAtPos(selection.$from.pos);
-    const toPos = view.coordsAtPos(selection.$to.pos);
+    if (isTouchDevice && viewportHeight) {
+        return {
+            left: 0,
+            right: 0,
+            top: viewportHeight - menuHeight,
+            offset: 0,
+            visible: true,
+        };
+    }
+    let fromPos;
+    let toPos;
+    try {
+        fromPos = view.coordsAtPos(selection.from);
+        toPos = view.coordsAtPos(selection.to, -1);
+    }
+    catch (err) {
+        console.warn(err);
+        return defaultPosition;
+    }
     const selectionBounds = {
         top: Math.min(fromPos.top, toPos.top),
         bottom: Math.max(fromPos.bottom, toPos.bottom),
@@ -70,7 +72,7 @@ function usePosition({ menuRef, isSelectingText, props }) {
     const isColSelection = selection.isColSelection && selection.isColSelection();
     const isRowSelection = selection.isRowSelection && selection.isRowSelection();
     if (isColSelection) {
-        const { node: element } = view.domAtPos(selection.$from.pos);
+        const { node: element } = view.domAtPos(selection.from);
         const { width } = element.getBoundingClientRect();
         selectionBounds.top -= 20;
         selectionBounds.right = selectionBounds.left + width;
@@ -180,6 +182,18 @@ const Wrapper = styled_components_1.default.div `
 
   @media print {
     display: none;
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    &:before {
+      display: none;
+    }
+
+    transition: opacity 150ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(1);
+    border-radius: 0;
+    width: 100vw;
+    position: fixed;
   }
 `;
 exports.default = React.forwardRef(function FloatingToolbarWithForwardedRef(props, ref) {

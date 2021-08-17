@@ -23,6 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(require("react"));
+const outline_icons_1 = require("outline-icons");
 const prosemirror_state_1 = require("prosemirror-state");
 const prosemirror_inputrules_1 = require("prosemirror-inputrules");
 const prosemirror_utils_1 = require("prosemirror-utils");
@@ -94,6 +95,19 @@ const getLayoutAndTitle = tokenTitle => {
         };
     }
 };
+const downloadImageNode = async (node) => {
+    const image = await fetch(node.attrs.src);
+    const imageBlob = await image.blob();
+    const imageURL = URL.createObjectURL(imageBlob);
+    const extension = imageBlob.type.split("/")[1];
+    const potentialName = node.attrs.alt || "image";
+    const link = document.createElement("a");
+    link.href = imageURL;
+    link.download = `${potentialName}.${extension}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
 class Image extends Node_1.default {
     constructor() {
         super(...arguments);
@@ -138,12 +152,19 @@ class Image extends Node_1.default {
             const transaction = view.state.tr.setSelection(new prosemirror_state_1.NodeSelection($pos));
             view.dispatch(transaction);
         };
+        this.handleDownload = ({ node }) => event => {
+            event.preventDefault();
+            event.stopPropagation();
+            downloadImageNode(node);
+        };
         this.component = props => {
             const { theme, isSelected } = props;
             const { alt, src, title, layoutClass } = props.node.attrs;
             const className = layoutClass ? `image image-${layoutClass}` : "image";
             return (React.createElement("div", { contentEditable: false, className: className },
                 React.createElement(ImageWrapper, { className: isSelected ? "ProseMirror-selectednode" : "", onClick: this.handleSelect(props) },
+                    React.createElement(Button, null,
+                        React.createElement(outline_icons_1.DownloadIcon, { color: "currentColor", onClick: this.handleDownload(props) })),
                     React.createElement(react_medium_image_zoom_1.default, { image: {
                             src,
                             alt,
@@ -153,7 +174,7 @@ class Image extends Node_1.default {
                                 backgroundColor: theme.background,
                             },
                         }, shouldRespectMaxDimension: true })),
-                React.createElement(Caption, { onKeyDown: this.handleKeyDown(props), onBlur: this.handleBlur(props), className: "caption", tabIndex: -1, role: "textbox", contentEditable: true, suppressContentEditableWarning: true }, alt)));
+                React.createElement(Caption, { onKeyDown: this.handleKeyDown(props), onBlur: this.handleBlur(props), className: "caption", tabIndex: -1, role: "textbox", contentEditable: true, suppressContentEditableWarning: true, "data-caption": this.options.dictionary.imageCaptionPlaceholder }, alt)));
         };
     }
     get name() {
@@ -190,10 +211,20 @@ class Image extends Node_1.default {
                             ? layoutClassMatched[1]
                             : null;
                         return {
-                            src: img.getAttribute("src"),
-                            alt: img.getAttribute("alt"),
-                            title: img.getAttribute("title"),
+                            src: img === null || img === void 0 ? void 0 : img.getAttribute("src"),
+                            alt: img === null || img === void 0 ? void 0 : img.getAttribute("alt"),
+                            title: img === null || img === void 0 ? void 0 : img.getAttribute("title"),
                             layoutClass: layoutClass,
+                        };
+                    },
+                },
+                {
+                    tag: "img",
+                    getAttrs: (dom) => {
+                        return {
+                            src: dom.getAttribute("src"),
+                            alt: dom.getAttribute("alt"),
+                            title: dom.getAttribute("title"),
                         };
                     },
                 },
@@ -237,6 +268,14 @@ class Image extends Node_1.default {
     }
     commands({ type }) {
         return {
+            downloadImage: () => async (state) => {
+                const { node } = state.selection;
+                if (node.type.name !== "image") {
+                    return false;
+                }
+                downloadImageNode(node);
+                return true;
+            },
             deleteImage: () => (state, dispatch) => {
                 dispatch(state.tr.deleteSelection());
                 return true;
@@ -244,19 +283,19 @@ class Image extends Node_1.default {
             alignRight: () => (state, dispatch) => {
                 const attrs = Object.assign(Object.assign({}, state.selection.node.attrs), { title: null, layoutClass: "right-50" });
                 const { selection } = state;
-                dispatch(state.tr.setNodeMarkup(selection.$from.pos, undefined, attrs));
+                dispatch(state.tr.setNodeMarkup(selection.from, undefined, attrs));
                 return true;
             },
             alignLeft: () => (state, dispatch) => {
                 const attrs = Object.assign(Object.assign({}, state.selection.node.attrs), { title: null, layoutClass: "left-50" });
                 const { selection } = state;
-                dispatch(state.tr.setNodeMarkup(selection.$from.pos, undefined, attrs));
+                dispatch(state.tr.setNodeMarkup(selection.from, undefined, attrs));
                 return true;
             },
             alignCenter: () => (state, dispatch) => {
                 const attrs = Object.assign(Object.assign({}, state.selection.node.attrs), { layoutClass: null });
                 const { selection } = state;
-                dispatch(state.tr.setNodeMarkup(selection.$from.pos, undefined, attrs));
+                dispatch(state.tr.setNodeMarkup(selection.from, undefined, attrs));
                 return true;
             },
             createImage: attrs => (state, dispatch) => {
@@ -289,15 +328,49 @@ class Image extends Node_1.default {
     }
 }
 exports.default = Image;
+const Button = styled_components_1.default.button `
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  border-radius: 4px;
+  background: ${props => props.theme.background};
+  color: ${props => props.theme.textSecondary};
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:hover {
+    color: ${props => props.theme.text};
+    opacity: 1;
+  }
+`;
 const ImageWrapper = styled_components_1.default.span `
   line-height: 0;
   display: inline-block;
+  position: relative;
+
+  &:hover {
+    ${Button} {
+      opacity: 0.9;
+    }
+  }
 `;
 const Caption = styled_components_1.default.p `
   border: 0;
   display: block;
   font-size: 13px;
   font-style: italic;
+  font-weight: normal;
   color: ${props => props.theme.textSecondary};
   padding: 2px 0;
   line-height: 16px;
@@ -311,7 +384,7 @@ const Caption = styled_components_1.default.p `
 
   &:empty:before {
     color: ${props => props.theme.placeholder};
-    content: "Write a caption";
+    content: attr(data-caption);
     pointer-events: none;
   }
 `;

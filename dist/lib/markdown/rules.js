@@ -11,12 +11,8 @@ const breaks_1 = __importDefault(require("./breaks"));
 const tables_1 = __importDefault(require("./tables"));
 const notices_1 = __importDefault(require("./notices"));
 const underlines_1 = __importDefault(require("./underlines"));
-function rules({ embeds }) {
-    return markdown_it_1.default("default", {
-        breaks: false,
-        html: false,
-        linkify: true,
-    })
+function rules({ embeds, rules = {} }) {
+    return markdown_it_1.default("default", Object.assign({ breaks: false, html: false, linkify: false }, rules))
         .use(embeds_1.default(embeds))
         .use(breaks_1.default)
         .use(checkboxes_1.default)

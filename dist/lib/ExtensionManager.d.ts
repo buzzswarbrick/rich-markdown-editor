@@ -9,9 +9,10 @@ export default class ExtensionManager {
     constructor(extensions?: Extension[], editor?: Editor);
     get nodes(): {};
     serializer(): MarkdownSerializer;
-    parser({ schema }: {
+    parser({ schema, rules, }: {
         schema: any;
-    }): MarkdownParser<any>;
+        rules?: Record<string, any>;
+    }): MarkdownParser;
     get marks(): {};
     get plugins(): import("prosemirror-state").Plugin<any, any>[];
     keymaps({ schema }: {

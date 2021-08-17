@@ -5,12 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Embeds = exports.Dark = exports.Focused = exports.Images = exports.Placeholder = exports.Persisted = exports.ReadOnlyWriteCheckboxes = exports.Checkboxes = exports.MaxLength = exports.ReadOnly = exports.Notices = exports.Code = exports.Marks = exports.Tables = exports.Blockquotes = exports.Lists = exports.Headings = exports.TemplateDoc = exports.Default = void 0;
 const index_1 = __importDefault(require("./index"));
-const lodash_1 = require("lodash");
+const debounce_1 = __importDefault(require("lodash/debounce"));
 const react_1 = __importDefault(require("react"));
 exports.default = {
     title: "Editor",
     component: index_1.default,
     argTypes: {
+        value: { control: "text" },
+        readOnly: { control: "boolean" },
         onSave: { action: "save" },
         onCancel: { action: "cancel" },
         onClickHashtag: { action: "hashtag clicked" },
@@ -19,6 +21,10 @@ exports.default = {
         onShowToast: { action: "toast" },
         onFocus: { action: "focused" },
         onBlur: { action: "blurred" },
+        disableExtensions: { control: "array" },
+    },
+    args: {
+        disableExtensions: [],
     },
 };
 const Template = (args) => react_1.default.createElement(index_1.default, Object.assign({}, args));
@@ -161,7 +167,7 @@ exports.Persisted.args = {
         `# Persisted
 
 The contents of this editor are persisted to local storage on change (edit and reload)`,
-    onChange: lodash_1.debounce((value) => {
+    onChange: debounce_1.default((value) => {
         const text = value();
         localStorage.setItem("saved", text);
     }, 250),
@@ -219,7 +225,7 @@ const embeds = [
 ];
 exports.Embeds = Template.bind({});
 exports.Embeds.args = {
-    onChange: lodash_1.debounce((value) => {
+    onChange: debounce_1.default((value) => {
         const text = value();
         console.log(text);
         localStorage.setItem("saved", text);

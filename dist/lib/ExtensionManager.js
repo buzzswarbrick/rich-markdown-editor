@@ -31,7 +31,7 @@ class ExtensionManager {
             .reduce((marks, extension) => (Object.assign(Object.assign({}, marks), { [extension.name]: extension.toMarkdown })), {});
         return new serializer_1.MarkdownSerializer(nodes, marks);
     }
-    parser({ schema }) {
+    parser({ schema, rules, }) {
         const tokens = this.extensions
             .filter(extension => extension.type === "mark" || extension.type === "node")
             .reduce((nodes, extension) => {
@@ -40,7 +40,7 @@ class ExtensionManager {
                 return nodes;
             return Object.assign(Object.assign({}, nodes), { [extension.markdownToken || extension.name]: md });
         }, {});
-        return new prosemirror_markdown_1.MarkdownParser(schema, rules_1.default({ embeds: this.embeds }), tokens);
+        return new prosemirror_markdown_1.MarkdownParser(schema, rules_1.default({ embeds: this.embeds, rules }), tokens);
     }
     get marks() {
         return this.extensions

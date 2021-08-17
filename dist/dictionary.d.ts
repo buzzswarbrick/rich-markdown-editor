@@ -18,6 +18,7 @@ export declare const base: {
     deleteRow: string;
     deleteTable: string;
     deleteImage: string;
+    downloadImage: string;
     alignImageLeft: string;
     alignImageRight: string;
     alignImageDefault: string;
@@ -31,6 +32,7 @@ export declare const base: {
     hr: string;
     image: string;
     imageUploadError: string;
+    imageCaptionPlaceholder: string;
     info: string;
     infoNotice: string;
     link: string;
@@ -41,6 +43,7 @@ export declare const base: {
     noResults: string;
     openLink: string;
     orderedList: string;
+    pageBreak: string;
     pasteLink: string;
     pasteLinkWithTitle: (title: string) => string;
     placeholder: string;

@@ -25,11 +25,10 @@ export default class Image extends Node {
         draggable: boolean;
         parseDOM: {
             tag: string;
-            getAttrs: (dom: HTMLDivElement) => {
+            getAttrs: (dom: HTMLImageElement) => {
                 src: string | null;
                 alt: string | null;
                 title: string | null;
-                layoutClass: string | null;
             };
         }[];
         toDOM: (node: any) => (string | any[] | {
@@ -46,6 +45,9 @@ export default class Image extends Node {
     }) => (event: any) => void;
     handleSelect: ({ getPos }: {
         getPos: any;
+    }) => (event: any) => void;
+    handleDownload: ({ node }: {
+        node: any;
     }) => (event: any) => void;
     component: (props: any) => JSX.Element;
     toMarkdown(state: any, node: any): void;
@@ -71,6 +73,7 @@ export default class Image extends Node {
     commands({ type }: {
         type: any;
     }): {
+        downloadImage: () => (state: any) => Promise<boolean>;
         deleteImage: () => (state: any, dispatch: any) => boolean;
         alignRight: () => (state: any, dispatch: any) => boolean;
         alignLeft: () => (state: any, dispatch: any) => boolean;
