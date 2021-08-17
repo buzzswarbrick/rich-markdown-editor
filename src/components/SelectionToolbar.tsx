@@ -26,6 +26,7 @@ type Props = {
   tooltip: typeof React.Component | React.FC<any>;
   rtl: boolean;
   isTemplate: boolean;
+  open: boolean;
   commands: Record<string, any>;
   onOpen: () => void;
   onClose: () => void;
@@ -54,7 +55,7 @@ function isVisible(props) {
   const fragment = slice.content;
   const nodes = fragment.content;
 
-  return some(nodes, n => n.content.size);
+  return some(nodes, (n) => n.content.size);
 }
 
 export default class SelectionToolbar extends React.Component<Props> {
@@ -158,7 +159,7 @@ export default class SelectionToolbar extends React.Component<Props> {
     }
 
     // Some extensions may be disabled, remove corresponding items
-    items = items.filter(item => {
+    items = items.filter((item) => {
       if (item.name === "separator") return true;
       if (item.name && !this.props.commands[item.name]) return false;
       return true;
@@ -170,7 +171,11 @@ export default class SelectionToolbar extends React.Component<Props> {
 
     return (
       <Portal>
-        <FloatingToolbar view={view} active={isVisible(this.props)}>
+        <FloatingToolbar
+          view={view}
+          active={isVisible(this.props)}
+          open={this.props.open}
+        >
           {link && range ? (
             <LinkEditor
               dictionary={dictionary}

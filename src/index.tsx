@@ -230,7 +230,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
 
   outsideClickListener(event) {
     if (this.element && event.target && !this.element.contains(event.target)) {
-      this.focusAtEnd();
+      // this.focusAtEnd();
       this.setState({ blockMenuOpen: false, selectionMenuOpen: false });
     }
   }
@@ -727,7 +727,6 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
     } = this.props;
     const { isRTL } = this.state;
     const dictionary = this.dictionary(this.props.dictionary);
-
     return (
       <Flex
         onKeyDown={onKeyDown}
@@ -755,6 +754,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
                   commands={this.commands}
                   rtl={isRTL}
                   isTemplate={this.props.template === true}
+                  open={this.state.selectionMenuOpen}
                   onOpen={this.handleOpenSelectionMenu}
                   onClose={this.handleCloseSelectionMenu}
                   onSearchLink={this.props.onSearchLink}
