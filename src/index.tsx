@@ -230,7 +230,6 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
 
   outsideClickListener(event) {
     if (this.element && event.target && !this.element.contains(event.target)) {
-      // this.focusAtEnd();
       this.setState({ blockMenuOpen: false, selectionMenuOpen: false });
     }
   }
