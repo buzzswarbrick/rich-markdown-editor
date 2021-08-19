@@ -1,25 +1,25 @@
-import assert from "assert";
-import * as React from "react";
-import { Portal } from "react-portal";
-import some from "lodash/some";
-import { EditorView } from "prosemirror-view";
-import getTableColMenuItems from "../menus/tableCol";
-import getTableRowMenuItems from "../menus/tableRow";
-import getTableMenuItems from "../menus/table";
-import getFormattingMenuItems from "../menus/formatting";
-import getImageMenuItems from "../menus/image";
-import getDividerMenuItems from "../menus/divider";
-import FloatingToolbar from "./FloatingToolbar";
-import LinkEditor, { SearchResult } from "./LinkEditor";
-import Menu from "./Menu";
-import isMarkActive from "../queries/isMarkActive";
-import getMarkRange from "../queries/getMarkRange";
-import isNodeActive from "../queries/isNodeActive";
-import getColumnIndex from "../queries/getColumnIndex";
-import getRowIndex from "../queries/getRowIndex";
-import createAndInsertLink from "../commands/createAndInsertLink";
-import { MenuItem } from "../types";
-import baseDictionary from "../dictionary";
+import assert from 'assert';
+import * as React from 'react';
+import { Portal } from 'react-portal';
+import some from 'lodash/some';
+import { EditorView } from 'prosemirror-view';
+import getTableColMenuItems from '../menus/tableCol';
+import getTableRowMenuItems from '../menus/tableRow';
+import getTableMenuItems from '../menus/table';
+import getFormattingMenuItems from '../menus/formatting';
+import getImageMenuItems from '../menus/image';
+import getDividerMenuItems from '../menus/divider';
+import FloatingToolbar from './FloatingToolbar';
+import LinkEditor, { SearchResult } from './LinkEditor';
+import Menu from './Menu';
+import isMarkActive from '../queries/isMarkActive';
+import getMarkRange from '../queries/getMarkRange';
+import isNodeActive from '../queries/isNodeActive';
+import getColumnIndex from '../queries/getColumnIndex';
+import getRowIndex from '../queries/getRowIndex';
+import createAndInsertLink from '../commands/createAndInsertLink';
+import { MenuItem } from '../types';
+import baseDictionary from '../dictionary';
 
 type Props = {
   dictionary: typeof baseDictionary;
@@ -43,10 +43,10 @@ function isVisible(props) {
 
   if (!selection) return false;
   if (selection.empty) return false;
-  if (selection.node && selection.node.type.name === "hr") {
+  if (selection.node && selection.node.type.name === 'hr') {
     return true;
   }
-  if (selection.node && selection.node.type.name === "image") {
+  if (selection.node && selection.node.type.name === 'image') {
     return true;
   }
   if (selection.node) return false;
@@ -55,7 +55,7 @@ function isVisible(props) {
   const fragment = slice.content;
   const nodes = fragment.content;
 
-  return some(nodes, (n) => n.content.size);
+  return some(nodes, n => n.content.size);
 }
 
 export default class SelectionToolbar extends React.Component<Props> {
@@ -89,9 +89,7 @@ export default class SelectionToolbar extends React.Component<Props> {
 
     // Insert a placeholder link
     dispatch(
-      view.state.tr
-        .removeMark(from, to, markType)
-        .addMark(from, to, markType.create({ href }))
+      view.state.tr.removeMark(from, to, markType).addMark(from, to, markType.create({ href })),
     );
 
     createAndInsertLink(view, title, href, {
@@ -101,25 +99,13 @@ export default class SelectionToolbar extends React.Component<Props> {
     });
   };
 
-  handleOnSelectLink = ({
-    href,
-    from,
-    to,
-  }: {
-    href: string;
-    from: number;
-    to: number;
-  }): void => {
+  handleOnSelectLink = ({ href, from, to }: { href: string; from: number; to: number }): void => {
     const { view } = this.props;
     const { state, dispatch } = view;
 
     const markType = state.schema.marks.link;
 
-    dispatch(
-      state.tr
-        .removeMark(from, to, markType)
-        .addMark(from, to, markType.create({ href }))
-    );
+    dispatch(state.tr.removeMark(from, to, markType).addMark(from, to, markType.create({ href })));
   };
 
   render() {
@@ -140,8 +126,7 @@ export default class SelectionToolbar extends React.Component<Props> {
     const isTableSelection = colIndex !== undefined && rowIndex !== undefined;
     const link = isMarkActive(state.schema.marks.link)(state);
     const range = getMarkRange(selection.$from, state.schema.marks.link);
-    const isImageSelection =
-      selection.node && selection.node.type.name === "image";
+    const isImageSelection = selection.node && selection.node.type.name === 'image';
 
     let items: MenuItem[] = [];
     if (isTableSelection) {
@@ -159,8 +144,8 @@ export default class SelectionToolbar extends React.Component<Props> {
     }
 
     // Some extensions may be disabled, remove corresponding items
-    items = items.filter((item) => {
-      if (item.name === "separator") return true;
+    items = items.filter(item => {
+      if (item.name === 'separator') return true;
       if (item.name && !this.props.commands[item.name]) return false;
       return true;
     });
@@ -171,11 +156,7 @@ export default class SelectionToolbar extends React.Component<Props> {
 
     return (
       <Portal>
-        <FloatingToolbar
-          view={view}
-          active={isVisible(this.props)}
-          open={this.props.open}
-        >
+        <FloatingToolbar view={view} active={isVisible(this.props)} open={this.props.open}>
           {link && range ? (
             <LinkEditor
               dictionary={dictionary}
