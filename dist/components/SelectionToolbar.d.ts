@@ -1,12 +1,13 @@
-import * as React from "react";
-import { EditorView } from "prosemirror-view";
-import { SearchResult } from "./LinkEditor";
-import baseDictionary from "../dictionary";
+import * as React from 'react';
+import { EditorView } from 'prosemirror-view';
+import { SearchResult } from './LinkEditor';
+import baseDictionary from '../dictionary';
 declare type Props = {
     dictionary: typeof baseDictionary;
     tooltip: typeof React.Component | React.FC<any>;
     rtl: boolean;
     isTemplate: boolean;
+    open: boolean;
     commands: Record<string, any>;
     onOpen: () => void;
     onClose: () => void;
@@ -20,7 +21,7 @@ export default class SelectionToolbar extends React.Component<Props> {
     isActive: boolean;
     componentDidUpdate(): void;
     handleOnCreateLink: (title: string) => Promise<void>;
-    handleOnSelectLink: ({ href, from, to, }: {
+    handleOnSelectLink: ({ href, from, to }: {
         href: string;
         from: number;
         to: number;

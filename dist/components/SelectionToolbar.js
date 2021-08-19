@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -59,10 +59,10 @@ function isVisible(props) {
         return false;
     if (selection.empty)
         return false;
-    if (selection.node && selection.node.type.name === "hr") {
+    if (selection.node && selection.node.type.name === 'hr') {
         return true;
     }
-    if (selection.node && selection.node.type.name === "image") {
+    if (selection.node && selection.node.type.name === 'image') {
         return true;
     }
     if (selection.node)
@@ -86,22 +86,18 @@ class SelectionToolbar extends React.Component {
             assert_1.default(from !== to);
             const href = `creating#${title}…`;
             const markType = state.schema.marks.link;
-            dispatch(view.state.tr
-                .removeMark(from, to, markType)
-                .addMark(from, to, markType.create({ href })));
+            dispatch(view.state.tr.removeMark(from, to, markType).addMark(from, to, markType.create({ href })));
             createAndInsertLink_1.default(view, title, href, {
                 onCreateLink,
                 onShowToast,
                 dictionary,
             });
         };
-        this.handleOnSelectLink = ({ href, from, to, }) => {
+        this.handleOnSelectLink = ({ href, from, to }) => {
             const { view } = this.props;
             const { state, dispatch } = view;
             const markType = state.schema.marks.link;
-            dispatch(state.tr
-                .removeMark(from, to, markType)
-                .addMark(from, to, markType.create({ href })));
+            dispatch(state.tr.removeMark(from, to, markType).addMark(from, to, markType.create({ href })));
         };
     }
     componentDidUpdate() {
@@ -130,7 +126,7 @@ class SelectionToolbar extends React.Component {
         const isTableSelection = colIndex !== undefined && rowIndex !== undefined;
         const link = isMarkActive_1.default(state.schema.marks.link)(state);
         const range = getMarkRange_1.default(selection.$from, state.schema.marks.link);
-        const isImageSelection = selection.node && selection.node.type.name === "image";
+        const isImageSelection = selection.node && selection.node.type.name === 'image';
         let items = [];
         if (isTableSelection) {
             items = table_1.default(dictionary);
@@ -151,7 +147,7 @@ class SelectionToolbar extends React.Component {
             items = formatting_1.default(state, isTemplate, dictionary);
         }
         items = items.filter(item => {
-            if (item.name === "separator")
+            if (item.name === 'separator')
                 return true;
             if (item.name && !this.props.commands[item.name])
                 return false;
@@ -161,7 +157,7 @@ class SelectionToolbar extends React.Component {
             return null;
         }
         return (React.createElement(react_portal_1.Portal, null,
-            React.createElement(FloatingToolbar_1.default, { view: view, active: isVisible(this.props) }, link && range ? (React.createElement(LinkEditor_1.default, Object.assign({ dictionary: dictionary, mark: range.mark, from: range.from, to: range.to, onCreateLink: onCreateLink ? this.handleOnCreateLink : undefined, onSelectLink: this.handleOnSelectLink }, rest))) : (React.createElement(Menu_1.default, Object.assign({ items: items }, rest))))));
+            React.createElement(FloatingToolbar_1.default, { view: view, active: isVisible(this.props), open: this.props.open }, link && range ? (React.createElement(LinkEditor_1.default, Object.assign({ dictionary: dictionary, mark: range.mark, from: range.from, to: range.to, onCreateLink: onCreateLink ? this.handleOnCreateLink : undefined, onSelectLink: this.handleOnSelectLink }, rest))) : (React.createElement(Menu_1.default, Object.assign({ items: items }, rest))))));
     }
 }
 exports.default = SelectionToolbar;

@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -28,7 +28,7 @@ const useComponentSize_1 = __importDefault(require("../hooks/useComponentSize"))
 const useMediaQuery_1 = __importDefault(require("../hooks/useMediaQuery"));
 const useViewportHeight_1 = __importDefault(require("../hooks/useViewportHeight"));
 const styled_components_1 = __importDefault(require("styled-components"));
-const SSR = typeof window === "undefined";
+const SSR = typeof window === 'undefined';
 const defaultPosition = {
     left: -1000,
     top: 0,
@@ -40,7 +40,7 @@ function usePosition({ menuRef, isSelectingText, props }) {
     const { selection } = view.state;
     const { width: menuWidth, height: menuHeight } = useComponentSize_1.default(menuRef);
     const viewportHeight = useViewportHeight_1.default();
-    const isTouchDevice = useMediaQuery_1.default("(hover: none) and (pointer: coarse)");
+    const isTouchDevice = useMediaQuery_1.default('(hover: none) and (pointer: coarse)');
     if (!active || !menuWidth || !menuHeight || SSR || isSelectingText) {
         return defaultPosition;
     }
@@ -80,10 +80,10 @@ function usePosition({ menuRef, isSelectingText, props }) {
     if (isRowSelection) {
         selectionBounds.right = selectionBounds.left = selectionBounds.left - 18;
     }
-    const isImageSelection = selection.node && selection.node.type.name === "image";
+    const isImageSelection = selection.node && selection.node.type.name === 'image';
     if (isImageSelection) {
         const element = view.nodeDOM(selection.from);
-        const imageElement = element.getElementsByTagName("img")[0];
+        const imageElement = element.getElementsByTagName('img')[0];
         const { left, top, width } = imageElement.getBoundingClientRect();
         return {
             left: Math.round(left + width / 2 + window.scrollX - menuWidth / 2),
@@ -124,15 +124,15 @@ function FloatingToolbar(props) {
         const handleMouseUp = () => {
             setSelectingText(false);
         };
-        window.addEventListener("mousedown", handleMouseDown);
-        window.addEventListener("mouseup", handleMouseUp);
+        window.addEventListener('mousedown', handleMouseDown);
+        window.addEventListener('mouseup', handleMouseUp);
         return () => {
-            window.removeEventListener("mousedown", handleMouseDown);
-            window.removeEventListener("mouseup", handleMouseUp);
+            window.removeEventListener('mousedown', handleMouseDown);
+            window.removeEventListener('mouseup', handleMouseUp);
         };
     }, [props.active]);
     return (React.createElement(react_portal_1.Portal, null,
-        React.createElement(Wrapper, { active: props.active && position.visible, ref: menuRef, offset: position.offset, style: {
+        React.createElement(Wrapper, { open: props.open, active: props.active && position.visible, ref: menuRef, offset: position.offset, style: {
                 top: `${position.top}px`,
                 left: `${position.left}px`,
             } }, position.visible && props.children)));
@@ -156,7 +156,7 @@ const Wrapper = styled_components_1.default.div `
   white-space: nowrap;
 
   &::before {
-    content: "";
+    content: '';
     display: block;
     width: 24px;
     height: 24px;
@@ -173,7 +173,8 @@ const Wrapper = styled_components_1.default.div `
     box-sizing: border-box;
   }
 
-  ${({ active }) => active &&
+  ${({ active, open }) => active &&
+    open &&
     `
     transform: translateY(-6px) scale(1);
     pointer-events: all;

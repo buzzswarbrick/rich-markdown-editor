@@ -8,10 +8,10 @@ export class MarkdownSerializerState {
     constructor(nodes: any, marks: any, options: any);
     nodes: any;
     marks: any;
-    delim: any;
+    delim: string;
     out: string;
     closed: boolean;
-    inTightList: any;
+    inTightList: boolean;
     options: any;
     flushClose(size: any): void;
     wrapBlock(delim: any, firstDelim: any, node: any, f: any): void;

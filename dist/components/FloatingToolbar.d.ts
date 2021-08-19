@@ -1,6 +1,7 @@
-import * as React from "react";
-import { EditorView } from "prosemirror-view";
+import * as React from 'react';
+import { EditorView } from 'prosemirror-view';
 declare type Props = {
+    open?: boolean;
     active?: boolean;
     view: EditorView;
     children: React.ReactNode;
