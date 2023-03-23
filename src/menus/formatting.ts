@@ -1,5 +1,6 @@
 import {
   BoldIcon,
+  ItalicIcon,
   CodeIcon,
   Heading1Icon,
   Heading2Icon,
@@ -42,10 +43,17 @@ export default function formattingMenuItems(
       name: "separator",
       visible: isTemplate,
     },
+
+    {
+      name: "em",
+      tooltip: dictionary.em,
+      icon: BoldIcon,
+      active: isMarkActive(schema.marks.em),
+    },
     {
       name: "strong",
       tooltip: dictionary.strong,
-      icon: BoldIcon,
+      icon: ItalicIcon,
       active: isMarkActive(schema.marks.strong),
     },
     {
